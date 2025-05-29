@@ -2,7 +2,9 @@ package com.example.perfulandia.controller;
 
 
 import com.example.perfulandia.model.ClienteModel;
+import com.example.perfulandia.model.EnvioPOJO;
 import com.example.perfulandia.model.Pago;
+import com.example.perfulandia.model.ProductoPOJO;
 import com.example.perfulandia.service.PagoServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -158,6 +160,9 @@ public class PagoController {
         Pago pag = pago;
 
         ClienteModel cli= pagoServices.obtenerCliente(id);
+        EnvioPOJO envio = pagoServices.obtenerEnvio(id);
+
+
 
         if (cli == null) {
             return ResponseEntity.noContent().build();
@@ -192,6 +197,8 @@ public class PagoController {
         document.add(new Paragraph("METODO PAGO : " + pag.getMetodo()));
 
         document.add(new Paragraph("BANCO PAGO : " + pag.getBanco()));
+
+        document.add(new Paragraph("DETALLES ENVIO: " + envio.getDestino()));
 
         document.close();
 

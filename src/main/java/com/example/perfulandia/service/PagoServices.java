@@ -1,7 +1,9 @@
 package com.example.perfulandia.service;
 
 import com.example.perfulandia.model.ClienteModel;
+import com.example.perfulandia.model.EnvioPOJO;
 import com.example.perfulandia.model.Pago;
+import com.example.perfulandia.model.ProductoPOJO;
 import com.example.perfulandia.repository.PagoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,29 @@ public class PagoServices {
         return cliente;
 
     }
+
+    public EnvioPOJO obtenerEnvio (long id){
+
+        String url = "http://localhost:8084/perfulandia/api/envios/" + id;
+
+        EnvioPOJO envio = restTemplate.getForObject(url, EnvioPOJO.class);
+
+        return envio;
+    }
+
+    public ProductoPOJO obtenerProducto (long id){
+
+        String url = "http://localhost:8080/perfulandia/api/producto/" + id;
+
+        ProductoPOJO producto = restTemplate.getForObject(url, ProductoPOJO.class);
+
+        return producto;
+
+    }
+
+
+
+
 
 
 
