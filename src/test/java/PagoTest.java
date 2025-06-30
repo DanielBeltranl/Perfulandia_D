@@ -1,7 +1,8 @@
+import com.example.perfulandia.PerfulandiaApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = PerfulandiaApplication.class)
 class PagoTest {
 
     @Test
