@@ -6,6 +6,12 @@ import com.example.perfulandia.model.EnvioPOJO;
 import com.example.perfulandia.model.Pago;
 import com.example.perfulandia.model.ProductoPOJO;
 import com.example.perfulandia.service.PagoServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/perfulandia/api/pago")
+@Tag(name = "Pagos", description = "Operaciones relacionadas con los pagos")
 
 public class PagoController {
 
@@ -28,6 +35,13 @@ public class PagoController {
     private PagoServices pagoServices;
 
     @GetMapping
+    @Operation(summary = "Obtener pagos", description = "Trae todo los pagos y los datos asociadios a cada uno de ellos" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista desplegada exitosamente",
+            content = @Content(mediaType= "application/jason",
+            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pagos no encontrados")
+    })
     public ResponseEntity<List<Pago>> listar() {
 
         List<Pago> pagos = pagoServices.findAll();
@@ -43,7 +57,16 @@ public class PagoController {
 
     }
 
+
     @PostMapping
+    @Operation(summary = "Ingresar Pago", description = "Ingresa un pago con productos y datos del cliente" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pago guardado exitosamente",
+                    content = @Content(mediaType= "application/jason",
+                            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pagos no guardado")
+    })
+
     public ResponseEntity<Pago> guardar(@RequestBody Pago pago) {
 
         Pago NuevoPago = pagoServices.save(pago);
@@ -53,6 +76,13 @@ public class PagoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar pago por id", description = "Busca un pago con productos asociado a un cleinte a traves del ID propio" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pago encontrado",
+                    content = @Content(mediaType= "application/jason",
+                            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pagos no encontrado")
+    })
 
     public ResponseEntity<Pago> obtener(@PathVariable Long id) {
 
@@ -72,12 +102,17 @@ public class PagoController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Modificar pago", description = "Modifica un pago a traves del ID del mismo" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pago modificado",
+                    content = @Content(mediaType= "application/jason",
+                            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pagos no modificado")
+    })
 
     public ResponseEntity<Pago> actualizar(@PathVariable Long id, @RequestBody Pago pago) {
-
-        Pago pag = pagoServices.findById(id);
-
         try {
+            Pago pag = pagoServices.findById(id);
 
             pag.setMonto(pago.getMonto());
             pag.setBanco(pago.getBanco());
@@ -87,17 +122,20 @@ public class PagoController {
             pagoServices.save(pag);
 
             return ResponseEntity.ok(pago);
-
         } catch (Exception e) {
-
             return ResponseEntity.notFound().build();
         }
-
-
     }
 
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Borrar pago", description = "Borra un pago buscando un pago por id" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pago borrado",
+                    content = @Content(mediaType= "application/jason",
+                            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "Pagos no encontrado")
+    })
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
 
         try {
@@ -114,47 +152,18 @@ public class PagoController {
 
     }
 
-    @GetMapping("/cliente/{id}")
-    public ResponseEntity<ClienteModel> infoCliente(@PathVariable Long id) {
-
-        ClienteModel cli = pagoServices.obtenerCliente(id);
-
-        if (cli == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(cli);
-
-    }
-
-    @PostMapping("/crearventa/{id}")
-    public ResponseEntity<String> crearVenta (@PathVariable Long id, @RequestBody Pago pago) {
-
-        ClienteModel cli = pagoServices.obtenerCliente(id);
-
-        Pago pag = pago;
-
-        String boleta = "";
-
-        if (cli == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        boleta += "Nombre cliente: " + cli.getNombre_cliente() + "\n"
-                + "Apellido cliente: " + cli.getApellido_cliente() + "\n"
-                + "RUN cliente: " + cli.getRun_cliente() + "\n"
-                + "Monto pago: " + pag.getMonto() + "\n"
-                + "Fecha pago: " + pag.getFecha() + "\n"
-                + "Metodo pago: " + pag.getMetodo() + "\n"
-                + "Banco pago: " + pag.getBanco() + "\n";
-        ;
-
-        return ResponseEntity.ok(boleta);
 
 
-    }
+
 
     @PostMapping("/boleta/{id}")
+    @Operation(summary = "Generar boleta", description = "Genera una boleta de un pago a trave de ingresar datos" )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Boleta creada",
+                    content = @Content(mediaType= "application/jason",
+                            schema = @Schema(implementation = Pago.class))),
+            @ApiResponse(responseCode = "404", description = "No se pudo generar la boleta")
+    })
     public ResponseEntity<byte[]> generarBoleta(@PathVariable long id, @RequestBody Pago pago) throws Exception {
 
         Pago pag = pago;
