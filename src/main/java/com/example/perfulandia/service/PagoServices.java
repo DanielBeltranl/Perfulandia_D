@@ -52,7 +52,7 @@ public class PagoServices {
 
         //url de la API cliente
 
-        String url = "http://localhost:8081/perfulandia/api/clientes/" + id;
+        String url = "perfulandia-cliente-1.onrender.com/perfulandia/api/clientes/" + id;
 
         ClienteModel cliente = restTemplate.getForObject(url, ClienteModel.class);
 
@@ -62,7 +62,7 @@ public class PagoServices {
 
     public EnvioPOJO obtenerEnvio (long id){
 
-        String url = "http://localhost:8084/perfulandia/api/envios/" + id;
+        String url = "https://perfulandia-envio.onrender.com/perfulandia/api/envios/" + id;
 
         EnvioPOJO envio = restTemplate.getForObject(url, EnvioPOJO.class);
 
@@ -71,7 +71,7 @@ public class PagoServices {
 
     public ProductoPOJO obtenerProducto (long id){
 
-        String url = "http://localhost:8080/perfulandia/api/producto/" + id;
+        String url = "https://perfulandia-producto-3.onrender.com/perfulandia/api/producto/" + id;
 
         ProductoPOJO producto = restTemplate.getForObject(url, ProductoPOJO.class);
 
