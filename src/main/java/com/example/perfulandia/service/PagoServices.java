@@ -52,7 +52,7 @@ public class PagoServices {
 
         //url de la API cliente
 
-        String url = "perfulandia-cliente-1.onrender.com/perfulandia/api/clientes/" + id;
+        String url = "https://perfulandia-cliente-1.onrender.com/perfulandia/api/clientes/" + id;
 
         ClienteModel cliente = restTemplate.getForObject(url, ClienteModel.class);
 
