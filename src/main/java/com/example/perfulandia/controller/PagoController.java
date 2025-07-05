@@ -1,10 +1,7 @@
 package com.example.perfulandia.controller;
 
 
-import com.example.perfulandia.model.ClienteModel;
-import com.example.perfulandia.model.EnvioPOJO;
-import com.example.perfulandia.model.Pago;
-import com.example.perfulandia.model.ProductoPOJO;
+import com.example.perfulandia.model.*;
 import com.example.perfulandia.service.PagoServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -164,12 +161,13 @@ public class PagoController {
                             schema = @Schema(implementation = Pago.class))),
             @ApiResponse(responseCode = "404", description = "No se pudo generar la boleta")
     })
-    public ResponseEntity<byte[]> generarBoleta(@PathVariable long id, @RequestBody Pago pago) throws Exception {
+    public ResponseEntity<byte[]> generarBoleta(@PathVariable long id, @RequestBody infoPagoDTO infoPagoDTO)  throws Exception {
 
-        Pago pag = pago;
-
+        infoPagoDTO info = new infoPagoDTO();
         ClienteModel cli= pagoServices.obtenerCliente(id);
+        Pago pag = infoPagoDTO.getPago();
         EnvioPOJO envio = pagoServices.obtenerEnvio(id);
+        List<Long> productos = infoPagoDTO.getLista_productos();
 
 
 
@@ -208,6 +206,25 @@ public class PagoController {
         document.add(new Paragraph("BANCO PAGO : " + pag.getBanco()));
 
         document.add(new Paragraph("DETALLES ENVIO: " + envio.getDestino()));
+
+        document.add(new Paragraph("DETALLES DE LA COMPRA"));
+
+        document.add(new Paragraph("--------------------------------"));
+
+
+
+        for ( int i = 0; i < productos.size(); i++ ) {
+
+            ProductoPOJO producto = pagoServices.obtenerProducto(productos.get(i));
+
+
+            document.add(new Paragraph("Nombre: " + producto.getNombre()));
+            document.add(new Paragraph("Precio: " + producto.getPrecio()));
+            document.add(new Paragraph("--------------------------------"));
+
+        }
+
+
 
         document.close();
 
